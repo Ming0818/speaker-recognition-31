@@ -1,6 +1,7 @@
 
 files = ["jake.wav" "tammany.wav" "lindsay.wav" "jake-hobbit.wav", ...
-    "tammany-hobbit.wav", "lindsay-hobbit.wav", "Scharf-hobbit.m4a"];
+    "tammany-hobbit.wav", "lindsay-hobbit.wav", "scharf-hobbit.m4a", ...
+    "michael-hobbit.m4a"];
 numfiles = size(files,2);
 
 
