@@ -12,12 +12,18 @@ from collections import Counter
 # want to identify how many speakers there are in given data 
 
 
-def fbank():
+def fbank(norm=False):
 	X = []
 
-
+	f_names = ["tammany", "jake", "lindsay"]
+	if norm:
+		f_names = map(lambda x: x + "norm.wav", f_names)
+	else:
+		f_names = map(lambda x: x + ".wav", f_names)
+	print f_names
+	
 	# reading in tammany features
-	(t_rate,t_sig) = wav.read("tammany.wav")
+	(t_rate,t_sig) = wav.read(f_names[0])
 	mfcc_feat_t = mfcc(t_sig,t_rate)
 	d_mfcc_feat_t = delta(mfcc_feat_t, 2)
 	fbank_feat_t = logfbank(t_sig,t_rate)
@@ -32,7 +38,7 @@ def fbank():
 		labels[tammany] = 'tammany'
 
 	# reading in jake features
-	(jake_rate,jake_sig) = wav.read("jake.wav")
+	(jake_rate,jake_sig) = wav.read(f_names[1])
 	mfcc_feat_jake = mfcc(jake_sig,jake_rate)
 	d_mfcc_feat_jake = delta(mfcc_feat_jake, 2)
 	fbank_feat_jake = logfbank(jake_sig,jake_rate)
@@ -44,7 +50,7 @@ def fbank():
 		labels[tammany] = 'jake'
 
 	# reading in lindsay features
-	(lind_rate,lind_sig) = wav.read("lindsay.wav")
+	(lind_rate,lind_sig) = wav.read(f_names[2])
 	mfcc_feat_lind = mfcc(lind_sig,lind_rate)
 	d_mfcc_feat_lind = delta(mfcc_feat_lind, 2)
 	fbank_feat_lind = logfbank(lind_sig,lind_rate)
@@ -81,11 +87,18 @@ def fbank():
 	return (keys, info)
 
 
-def mfcc_():
+def mfcc_(norm=False):
 	X = []
 
+	f_names = ["tammany", "jake", "lindsay"]
+	if norm:
+		f_names = map(lambda x: x + "norm.wav", f_names)
+	else:
+		f_names = map(lambda x: x + ".wav", f_names)
+	print f_names
+
 	# reading in tammany features
-	(t_rate,t_sig) = wav.read("tammany.wav")
+	(t_rate,t_sig) = wav.read(f_names[0])
 	mfcc_feat_t = mfcc(t_sig,t_rate)
 	d_mfcc_feat_t = delta(mfcc_feat_t, 2)
 	fbank_feat_t = logfbank(t_sig,t_rate)
@@ -100,7 +113,7 @@ def mfcc_():
 		labels[tammany] = 'tammany'
 
 	# reading in jake features
-	(jake_rate,jake_sig) = wav.read("jake.wav")
+	(jake_rate,jake_sig) = wav.read(f_names[1])
 	mfcc_feat_jake = mfcc(jake_sig,jake_rate)
 	d_mfcc_feat_jake = delta(mfcc_feat_jake, 2)
 	fbank_feat_jake = logfbank(jake_sig,jake_rate)
@@ -112,7 +125,7 @@ def mfcc_():
 		labels[tammany] = 'jake'
 
 	# reading in lindsay features
-	(lind_rate,lind_sig) = wav.read("lindsay.wav")
+	(lind_rate,lind_sig) = wav.read(f_names[2])
 	mfcc_feat_lind = mfcc(lind_sig,lind_rate)
 	d_mfcc_feat_lind = delta(mfcc_feat_lind, 2)
 	fbank_feat_lind = logfbank(lind_sig,lind_rate)
@@ -137,8 +150,22 @@ def mfcc_():
 		info.append((kmeans.labels_[i], name))
 
 	#print sorted(Counter(info), key=lambda x: x[0])
-	print Counter(info)
+	# print Counter(info)
+	info = Counter(info)
+	keys = sorted(info, key=lambda x: x[0])
+
+	data = {'tammany': len(mfcc_feat_t), 'jake': len(mfcc_feat_jake), 'lind': len(mfcc_feat_lind)}
+
+	for k in keys:
+		print k, info[k] / float(data[k[1]])
 
 
+fbank(norm=True)
+print "\n\n"
 fbank()
+print "\n\nmfcc:\n"
+mfcc_(norm=True)
+print "\n\n"
+mfcc_()
+
 
