@@ -1,12 +1,22 @@
-[audioIn, fs] = audioread('jake.wav');
-frameDuration = 30; %ms
-shift = 10; %time shift
-alpha = 0.97;
-window = 0; %preemphasis coefficient???
-R = [ 300 3700];    %range to consider
-M = 20; % filterbank channels
-C = 13; %cepstral coefficients
-L = 22; % cepstral sine lifter parameter????
+
+files = ["jake.wav" "tammany.wav" "lindsay.wav"];
+numfiles = size(files,2);
 
 
-[CC] = mfcc(audioIn, fs, frame);
+%Calculate MFCCs
+mfccs = cell(1,numfiles);
+for i = 1:numfiles
+    filename = files(1,i);
+    
+    mffcs_for_filename; %run on file 'filename'
+    
+    mfccs(1,i) = {MFCCs};
+ 
+end
+close all;
+
+
+%% Analyze Data
+
+% Put all data together in one vectore
+for i = 1:siz

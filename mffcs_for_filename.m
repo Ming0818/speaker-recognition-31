@@ -1,8 +1,9 @@
 %filename = 'jake.wav'
 
 %% Actual Script
+name = char(filename);
 
-[ speech, fs ] = audioread( filename );
+[ speech, fs ] = audioread( name );
 speech = speech(:,1);
 Tw = 30; %frame duration in ms
 Ts = 10; %time shift
