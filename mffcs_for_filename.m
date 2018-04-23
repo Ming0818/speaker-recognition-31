@@ -5,7 +5,7 @@ name = char(filename);
 
 [ speech, fs ] = audioread( name );
 speech = speech(:,1);
-Tw = 30; %frame duration in ms
+Tw = 30; %frame duration in ms (from KINNUNEN clustering paper)
 Ts = 10; %time shift
 alpha = 0.97;
 hamming = @(N)(0.54-0.46*cos(2*pi*[0:N-1].'/(N-1)));

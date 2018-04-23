@@ -5,6 +5,23 @@ files = ["jake.wav" "tammany.wav" "lindsay.wav" "jake-hobbit.wav", ...
 numfiles = size(files,2);
 
 
+%% Clean
+
+figure(3);
+x = audioread('jake.wav');
+x = x(:,1);
+x = x(1:10000,1);
+[W,s,v]=svd((repmat(sum(x.*x,1),size(x,1),1).*x)*x');
+plot(t,v(:,1));
+hold on;
+maxAmp = max(v(:,1));
+plot(t,v(:,2),'r'); xlabel('time'); ylabel('amplitude'); axis([0 0.005 -maxAmp maxAmp]); legend('isolated tone 1', 'isolated tone 2');
+hold off;
+
+
+%%
+
+
 %Calculate MFCCs
 mfccs = cell(1,numfiles);
 for i = 1:numfiles
