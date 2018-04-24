@@ -41,7 +41,7 @@ end
 
 %% Run Kmeans Clustering on Aggregate Data
 
-minClusters = 1;
+minClusters = 8;
 maxClusters = 20;
 
 for k = minClusters:maxClusters
