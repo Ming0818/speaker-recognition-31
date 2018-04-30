@@ -141,13 +141,13 @@ title('Pitch Contour');
  
 %dataDir = HelperAN4Download; % Path to data directory 
 % change path as needed
-dataDir = '/Users/lindsayhexter/Documents/GitHub/speaker-recognition/Audio Files/';
+dataDir = '/Users/lindsayhexter/Documents/GitHub/speaker-recognition/Audio Files/test/';
 %%
 % Create an |audioexample.Datastore| object to easily manage this database
 % for training. The datastore allows you to collect necessary files of a
 % file format and read them.
 ads = audioexample.Datastore(dataDir, 'IncludeSubfolders', true,...
-    'FileExtensions', '.wav', 'ReadMethod','File',...
+    'FileExtensions', {'.wav', '.m4a'}, 'ReadMethod','File',...
     'LabelSource','foldernames')
 
 %%
@@ -209,7 +209,9 @@ for i = 1:lenDataTrain
     [dataTrain, infoTrain] = read(trainDatastore); 
     % cutting off data - before ran for like 20min and didn't stop b/c of billion nested
     % for-loop
-    dataTrain = dataTrain(1:2000,:);
+    len_ = size(dataTrain);
+    len_ = len_(1);
+    dataTrain = dataTrain(1:(int16(len_)*1),:);
     
     % checking if the data gave more than one frame - cut it off
     len = size(dataTrain);
@@ -253,10 +255,32 @@ for i=1:size(features)
     pcaCoeffs = pca(temp');
     pcaTest = temp*pcaCoeffs;
     % plotting the pca
-    plot3(pcaTest(:,1), pcaTest(:, 2), pcaTest(:, 3), 'o', 'color',color);
+    plot3(pcaTest(:,1), pcaTest(:, 2), pcaTest(:, 3), 'o', 'color',color, 'MarkerFaceColor', color);
+    %[h, ~] = legend('show');
     %all = [all pcaTest];
+    %legend('show');
+    
     hold on;
 end
+
+l_list = {};
+for i=1:size(names)
+%lgd = legend(names);
+    name= names{i};
+    disp(names{i});
+    l_list = [l_list, ['\color[rgb]{' num2str(CM(map(name), 1)) ',' num2str(CM(map(name), 2)) ',' num2str(CM(map(name), 3))  '} ' name]];
+    
+end 
+
+lgd = legend(l_list);
+lgd.FontSize = 14;
+%colorbar
+% [h, ~, plots] = legend(names);
+% for idx = 1:length(h.String)
+%     h.String{idx} = [CM(map(h.String{idx}),:) ' ' h.String{idx}]
+% end
+
+%legend([hbc{:}],'old','new');
 hold off;
 
 %% Training a Classifier
@@ -308,7 +332,17 @@ lenDataTest = length(testDatastore.Files);
 featuresTest = cell(lenDataTest,1);
 for i = 1:lenDataTest
   [dataTest, infoTest] = read(testDatastore);
+  len_ = size(dataTest);
+  len_ = len_(1);
+  dataTest = dataTest(1:(int16(len_)*1),:);
+    % checking if the data gave more than one frame - cut it off
+    len = size(dataTest);
+    if len(2) > 1
+        dataTest = dataTest(:,1);
+        infoTest = infoTest(:,1);
+    end
   featuresTest{i} = HelperComputePitchAndMFCC(dataTest,infoTest); 
+  
 end
 featuresTest = vertcat(featuresTest{:});
 featuresTest = rmmissing(featuresTest);
