@@ -77,8 +77,8 @@ lgd.FontSize = 14;
 
 %legend([hbc{:}],'old','new');
 %hold off;
-
-recObj = audiorecorder; % default is 9000 sample rate
+disp('here');
+recObj = audiorecorder(44100, 16, 1); % default is 9000 sample rate
 % if we want to set functions to tell us when we're starting and stopping
 % the recording
 % recObj.StartFcn = 'disp(''Start speaking.'')';
@@ -94,19 +94,26 @@ total = {};
 finish=false;
 set(gcf,'CurrentCharacter','@'); % set to a dummy character
 while ~finish
-  t = audioCluster(recObj);
-  total = vertcat(total, t);
+  hold on;
+ % total = vertcat(total, t);
   % check for keys
+  record(recObj);
+  pause(1);
+  pause(recObj);
+  t = audioCluster(recObj);
   k=get(gcf,'CurrentCharacter');
   if k~='@' % has it changed from the dummy character?
     set(gcf,'CurrentCharacter','@'); % reset the character
     % now process the key as required
     if k=='q', finish=true; end
   end
+  resume(recObj);
 end
+stop(recObj);
+total = audioCluster(recObj);
 disp('about to predict');
-total = arrayfun(@(col) vertcat(total{:, col}), 1:size(total, 2), 'UniformOutput', false);
-total = total{1};
+% total = arrayfun(@(col) vertcat(total{:, col}), 1:size(total, 2), 'UniformOutput', false);
+% total = total{1};
 predictedLabels = string(predict(trainedClassifier,total)); % Predict
 totalVals = size(predictedLabels,1);
 
