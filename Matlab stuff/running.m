@@ -1,6 +1,6 @@
 
 
-dirname = '../Audio Files';
+dirname = '../Audio Files/test';
 
 
 %% Grab Directories and Caluclate MFCCs
@@ -28,10 +28,12 @@ for i = 1:size(subs)
             if sub.name(end) == 'v' %populate cell with filename
                 filename = fullfile(sub.folder,sub.name);
                 mffcs_for_filename;
+                % subtracting mean and dividing standard dev 
+                MFCCs = (MFCCs-mean(MFCCs))./std(MFCCs);
                 combined = [combined MFCCs];
             end
         end
-        dataCell(1,end+1) = {name};
+        dataCell(1,end+1) = {subs(i).name};
         dataCell(2,end) = {combined};
         dataCell(3,end) = {mean(combined,2)};
         aggregate = [aggregate combined];
@@ -41,8 +43,8 @@ end
 
 %% Run Kmeans Clustering on Aggregate Data
 
-minClusters = 8;
-maxClusters = 20;
+minClusters = 2;
+maxClusters = 7;
 
 for k = minClusters:maxClusters
    
@@ -110,7 +112,70 @@ legend
 
 %% Plot data in 3d corresponding to voices
 
+%% Testing out classification method
+
+figure();
+hold on;
+
+% getting colors for our speakers
+% number of speakers
+name_num = size(dataCell(1,:));
+name_num = name_num(2);
+CM = jet(name_num); % # of unique colors for that # of speakers
+
+ for i = 1:size(pcaDataCell,2) %Plot averages for each speaker
+    c = pcaDataCell{3,i};
+    plot3(c(:,1),c(:,2),c(:,3),'o', 'color', CM(i,:));
+ end
+
+lgd = legend(dataCell{1,:},'AutoUpdate','off');
+lgd.FontSize = 14;
+title('Scatter of MFCC Vectors Colored By Speaker')
 
 
+recObj = audiorecorder(44100, 16, 1); % default is 9000 sample rate
+% if we want to set functions to tell us when we're starting and stopping
+% the recording
+% recObj.StartFcn = 'disp(''Start speaking.'')';
+% recObj.StopFcn = 'disp(''End of recording.'')';
+% timerFcn doesn't seem to work, so instead use the loop below
 
+% loop that plots MFCCs for every 1 second recording of data, so you can in
+% almost real-time watch your voice cluster 
+
+% will loop until you press 'q' 
+total = {};
+finish=false;
+set(gcf,'CurrentCharacter','@'); % set to a dummy character
+disp('Start recording');
+while ~finish
+  hold on;
+ % total = vertcat(total, t);
+  % check for keys
+  record(recObj);
+  pause(1);
+  pause(recObj);
+  t = audioCluster_new(recObj, false);
+  k=get(gcf,'CurrentCharacter');
+  if k~='@' % has it changed from the dummy character?
+    set(gcf,'CurrentCharacter','@'); % reset the character
+    % now process the key as required
+    if k=='q', finish=true; end
+  end
+  resume(recObj);
+end
+stop(recObj);
+disp('End recording');
+total = audioCluster_new(recObj, false);
+disp('about to predict');
+
+
+% hashmap of labels:means (e.g. name:[mean_of_mfccs])
+map = containers.Map(dataCell(1,:), dataCell(3,:));
+
+label = spkr_classify(total, map, true);
+disp(label);
+
+
+hold off;
 

@@ -16,13 +16,13 @@ C = 13; %cepstral coefficients
 L = 22; % cepstral sine lifter parameter????
 
 
-[MFCCs, FBEs, frames] = mfcc(speech, fs, Tw, Ts, alpha, hamming, R, M, C, L);
+[MFCCs, FBEs, frames] = mfcc2(speech, fs, Tw, Ts, alpha, hamming, R, M, C, L);
 
 
-
-figure('Position', [30 100 800 200], 'PaperPositionMode', 'auto','color', 'w', 'PaperOrientation', 'landscape', 'Visible', 'on' ); 
-imagesc( [1:size(MFCCs,2)], [0:C-1], MFCCs ); 
-axis( 'xy' );
-xlabel( 'Frame index' ); 
-ylabel( 'Cepstrum index' );
-title( 'Mel frequency cepstrum' );
+% 
+% figure('Position', [30 100 800 200], 'PaperPositionMode', 'auto','color', 'w', 'PaperOrientation', 'landscape', 'Visible', 'on' ); 
+% imagesc( [1:size(MFCCs,2)], [0:C-1], MFCCs ); 
+% axis( 'xy' );
+% xlabel( 'Frame index' ); 
+% ylabel( 'Cepstrum index' );
+% title( 'Mel frequency cepstrum' );
