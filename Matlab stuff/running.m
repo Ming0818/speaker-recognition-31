@@ -42,10 +42,9 @@ end
 
 %% Cluster mfcc data per voice
 codebook_size = 64;
-for i = 1:size(dataCell,1)
+for i = 1:size(dataCell,2)
     [idx, c] = kmeans(dataCell{2,i}', codebook_size); %c is a k-b-p matrix of centroids
     dataCell(3,i) = {c}; %64 X 13 vector that represents center of 64 clusters for voice profile
-    
 end
 
 
@@ -82,7 +81,7 @@ for i = 1:size(dataCell,2) % run pca on each component
     if size(dataCell{2,i},1) == size(pcaCoeffs,1)
         pcaDataCell{1,end+1} = dataCell{1,i}; % copy name
         pcaDataCell{2,end} = dataCell{2,i}' * pcaCoeffs; %pca on data
-        pcaDataCell{3,end} = dataCell{3,i}' * pcaCoeffs; %pca on centers
+        pcaDataCell{3,end} = dataCell{3,i} * pcaCoeffs; %pca on centers
     else
     end
     
@@ -153,7 +152,7 @@ recObj = audiorecorder(44100, 16, 1); % default is 9000 sample rate
 % almost real-time watch your voice cluster 
 
 % will loop until you press 'q' 
-total = {};
+recording_mfccs = {};
 finish=false;
 set(gcf,'CurrentCharacter','@'); % set to a dummy character
 disp('Start recording');
@@ -175,14 +174,33 @@ while ~finish
 end
 stop(recObj);
 disp('End recording');
-total = audioCluster_new(recObj, false);
+
+
+%% Get MFCCs for recorded data
+
+recording_mfccs = audioCluster_new(recObj, false);
 disp('about to predict');
 
+%% Cluster new recording
 
-% hashmap of labels:means (e.g. name:[mean_of_mfccs])
-map = containers.Map(dataCell(1,:), dataCell(3,:));
+[idx, c] = kmeans(recording_mfccs', codebook_size); %c is a k-b-p matrix of centroids
+recorded_profile = c; %64 X 13 vector that represents center of 64 clusters for voice profile
 
-label = spkr_classify(total, map, true);
+%% Classify
+
+for i=1:size(dataCell, 1)
+    %compute difference from voice profile to each profile in codebook    
+    %distance(i) = calc_dissimilarity(recorded_profile, dataCell{3,i});
+    [dists, ids] = pdist2(recorded_profile,dataCell{3,i},'euclidean','Smallest',1);
+    distance(i) = nanmean(dists);
+    % compute euclidean distance to nearest mean
+    %dist = norm(mfccs-map(labels{i}));
+    %distances(i) = dist;
+end
+
+[min_val, min_ind] = min(distance);
+label = dataCell{1,min_ind};
+
 disp(label);
 
 
