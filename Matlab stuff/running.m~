@@ -35,16 +35,16 @@ for i = 1:size(subs)
         end
         dataCell(1,end+1) = {subs(i).name};
         dataCell(2,end) = {combined};
-        %dataCell(3,end) = {mean(combined,2)};
+        dataCell(3,end) = {mean(combined,2)};
         aggregate = [aggregate combined];
     end
 end
 
 %% Cluster mfcc data per voice
-codebook_size = 64;
+
 for i = 1:size(dataCell,1)
-    [idx, c] = kmeans(dataCell{2,i}', codebook_size); %c is a k-b-p matrix of centroids
-    dataCell(3,i) = {c};
+    [idx, c] =  %c is a k-b-p matrix of centroids
+    
     
 end
 
