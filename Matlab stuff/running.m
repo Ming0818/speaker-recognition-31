@@ -115,6 +115,7 @@ legend
 %% Testing out classification method
 
 figure();
+view(3);
 hold on;
 
 % getting colors for our speakers
@@ -178,4 +179,6 @@ disp(label);
 
 
 hold off;
+
+
 
