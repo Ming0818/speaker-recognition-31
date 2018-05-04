@@ -29,7 +29,7 @@ for i = 1:size(subs)
                 filename = fullfile(sub.folder,sub.name);
                 mffcs_for_filename;
                 % subtracting mean and dividing standard dev 
-                MFCCs = (MFCCs-mean(MFCCs))./std(MFCCs);
+                %MFCCs = (MFCCs-mean(MFCCs))./std(MFCCs);
                 combined = [combined MFCCs];
             end
         end

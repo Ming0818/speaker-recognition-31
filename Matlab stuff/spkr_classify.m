@@ -15,7 +15,7 @@ mfccs = nanmean(mfccs,2);
 if plot
     % running pca on the mfccs for plotting purposes
     pcaTest = mfccs'*pcaCoeffs;
-    plot3(pcaTest(:,1), pcaTest(:, 2), pcaTest(:, 3), 'o', 'color', 'k');
+    plot3(pcaTest(:,1), pcaTest(:, 2), pcaTest(:, 3), '*', 'color', 'k');
 end
 
 % compare to given audio profiles - return the label of whichever is
