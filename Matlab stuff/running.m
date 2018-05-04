@@ -44,7 +44,7 @@ end
 codebook_size = 64;
 for i = 1:size(dataCell,1)
     [idx, c] = kmeans(dataCell{2,i}', codebook_size); %c is a k-b-p matrix of centroids
-    dataCell(3,i) = {c};
+    dataCell(3,i) = {c}; %64 X 13 vector that represents center of 64 clusters for voice profile
     
 end
 
