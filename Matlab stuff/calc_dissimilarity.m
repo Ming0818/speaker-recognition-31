@@ -9,8 +9,12 @@ function [dissimilarity] = calc_dissimilarity(test,profile)
 codebook_size = size(text,1);
 num_features = size(test,2);
 
+size(test)
+size(profile)
 [dists, ids] = pdist2(test,profile,'euclidean','Smallest',1);
 dissimilarity = nanmean(dists);
+
+end
 
 
 
