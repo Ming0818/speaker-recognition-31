@@ -9,6 +9,7 @@ plot_training_data = false;
 scatter_voice_data = false;
 scatter_clustered_data = false;
 liveDemo = false;
+plot_voice_profile = true;
 
 %% Grab Directories and Caluclate MFCCs (Training)
 
@@ -282,24 +283,38 @@ for i = 1:size(testDataCells,2) % Classify each test sample
     %Test against each voice profile
     for j = 1:size(trainedDataCells,2)
         [dists, ids] = pdist2(testDataCells{3,i}, trainedDataCells{3,j},'euclidean','Smallest',1);
-        distance64(i) = nanmean(dists);
-        distanceMean(i) = nanmean(testDataCells{4,i} - trainedDataCells{4,j});
-        distanceNormMean(i) = nanmean(testDataCells{5,i} - trainedDataCells{5,j});
+        distance64(j) = nanmean(dists);
+        distanceMean(j) = abs(nanmean(testDataCells{4,i} - trainedDataCells{4,j}));
+        distanceNormMean(j) = abs(nanmean(testDataCells{5,i} - trainedDataCells{5,j}));
     end
     [min_val, min_ind] = min(distance64);
-    classification_results(i,1) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
+    sort(distance64);
+    certainty = min_val / (min_val + distance64(2));
+    classification_results(i,1) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind} '(' num2str(certainty) ')']};
     
     [min_val, min_ind] = min(distanceMean);
-    classification_results(i,2) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
+    sort(distanceMean);
+    certainty = min_val / (min_val + distanceMean(2));
+    classification_results(i,2) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind} '(' num2str(certainty) ')']};
     
     [min_val, min_ind] = min(distanceNormMean);
-    classification_results(i,3) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
+    sort(distanceNormMean);
+    certainty = min_val / (min_val + distanceNormMean(2));
+    classification_results(i,3) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind} '(' num2str(certainty) ')']};
 end
 
 classification_results(end+1,1) = {'64 Clusters'};
 classification_results(end,2) = {'Mean'};
 classification_results(end,3) = {'Normalized Mean'};
 
+
+%% Plot a voice profile
+
+if plot_voice_profile
+    
+    
+    
+end
 
 
 
