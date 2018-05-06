@@ -1,4 +1,4 @@
-%filename = 'jake.wav'
+%filename = 'jake.wav';
 
 %% Actual Script
 name = char(filename);
@@ -17,7 +17,7 @@ L = 22; % cepstral sine lifter parameter????
 
 
 [MFCCs, FBEs, frames] = mfcc2(speech, fs, Tw, Ts, alpha, hamming, R, M, C, L);
-
+%MFCCs is a 13 x n vector
 
 % 
 % figure('Position', [30 100 800 200], 'PaperPositionMode', 'auto','color', 'w', 'PaperOrientation', 'landscape', 'Visible', 'on' ); 

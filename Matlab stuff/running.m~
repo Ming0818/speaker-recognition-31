@@ -275,7 +275,6 @@ end
 
 %% Classify Test Data
 
-classification_results = cell(0);
 for i = 1:size(testDataCells,2) % Classify each test sample
     
     
@@ -287,18 +286,15 @@ for i = 1:size(testDataCells,2) % Classify each test sample
         distanceNormMean(i) = nanmean(testDataCells{5,i} - trainedDataCells{5,j});
     end
     [min_val, min_ind] = min(distance64);
-    classification_results(i,1) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
+    class64(i) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
     
     [min_val, min_ind] = min(distanceMean);
-    classification_results(i,2) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
+    classMean(i) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
     
     [min_val, min_ind] = min(distanceNormMean);
-    classification_results(i,3) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
+    classNormMean(i) = {[testDataCells{1,i} ' - ' trainedDataCells{1,min_ind}]};
 end
 
-classification_results(end+1,1) = {'64 Clusters'};
-classification_results(end,2) = {'Mean'};
-classification_results(end,3) = {'Normalized Mean'};
 
 
 
