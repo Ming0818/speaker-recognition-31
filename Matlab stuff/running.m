@@ -54,7 +54,7 @@ for i = 1:size(subs)
                 
         %add normalized mean
         normCombined = (combined - mean(combined)) ./ std(combined);
-        trainedDataCells(5,end) = {mean(combined)};
+        trainedDataCells(5,end) = {mean(normCombined)};
         
         %dataCell(3,end) = {mean(combined,2)};
         aggregate = [aggregate combined'];
@@ -284,8 +284,8 @@ for i = 1:size(testDataCells,2) % Classify each test sample
     for j = 1:size(trainedDataCells,2)
         [dists, ids] = pdist2(testDataCells{3,i}, trainedDataCells{3,j},'euclidean','Smallest',1);
         distance64(j) = nanmean(dists);
-        distanceMean(j) = abs(nanmean(testDataCells{4,i} - trainedDataCells{4,j}));
-        distanceNormMean(j) = abs(nanmean(testDataCells{5,i} - trainedDataCells{5,j}));
+        distanceMean(j) = pdist2(testDataCells{4,i}, trainedDataCells{4,j},'euclidean','Smallest',1);%abs(nanmean(abs(testDataCells{4,i} - trainedDataCells{4,j})));
+        distanceNormMean(j) = pdist2(testDataCells{5,i}, trainedDataCells{5,j},'euclidean','Smallest',1);%abs(nanmean(abs(testDataCells{5,i} - trainedDataCells{5,j})));
     end
     [min_val, min_ind] = min(distance64);
     sort(distance64);
